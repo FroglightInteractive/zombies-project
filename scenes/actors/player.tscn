@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://bfml67xti40y0"]
+
+[ext_resource type="Texture2D" uid="uid://dultr1g56loyw" path="res://assets/images/player.png" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://cccvl8jupn5qs" path="res://scenes/actors/player.gd" id="1_g2els"]
+[ext_resource type="Texture2D" uid="uid://bmaipib8dmfy" path="res://assets/images/dust.png" id="3_8y416"]
+[ext_resource type="Script" uid="uid://drpttt3optl3r" path="res://scenes/components/state_machine/state_machine.gd" id="3_ktjr4"]
+[ext_resource type="Script" uid="uid://tjtxruw00jmt" path="res://scenes/actors/state_walking.gd" id="4_7wueq"]
+[ext_resource type="Texture2D" uid="uid://c4hs28rhid1ie" path="res://assets/images/player_walk.png" id="4_7860b"]
+[ext_resource type="Script" uid="uid://d0cchv25mg772" path="res://scenes/actors/state_rolling.gd" id="5_oomub"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g2els"]
+radius = 11.045361
+
+[sub_resource type="Curve" id="Curve_8y416"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.8233945, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7860b"]
+load_path = "res://.godot/imported/dust.png-ddaed6560f2b73f463b2f465ab954e35.ctex"
+
+[sub_resource type="Curve" id="Curve_xx81n"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.8233945, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xx81n"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0w4p8"]
+atlas = ExtResource("4_7860b")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wl55n"]
+atlas = ExtResource("4_7860b")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kggx2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xx81n")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0w4p8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wl55n")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 15.0
+}]
+
+[node name="Player" type="CharacterBody2D" unique_id=1160419393]
+script = ExtResource("1_g2els")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1465140987]
+shape = SubResource("CircleShape2D_g2els")
+
+[node name="DustParticles" type="CPUParticles2D" parent="." unique_id=1495595345]
+position = Vector2(0, 7)
+emitting = false
+amount = 11
+texture = ExtResource("3_8y416")
+lifetime = 0.4
+emission_shape = 1
+emission_sphere_radius = 6.2
+gravity = Vector2(0, 0)
+scale_amount_min = 0.5
+scale_amount_curve = SubResource("Curve_8y416")
+
+[node name="WalkParticles" type="CPUParticles2D" parent="." unique_id=1642156299]
+position = Vector2(0, 8)
+amount = 4
+texture = SubResource("CompressedTexture2D_7860b")
+lifetime = 0.4
+emission_shape = 1
+emission_sphere_radius = 4.08
+gravity = Vector2(0, 0)
+scale_amount_min = 0.2
+scale_amount_max = 0.5
+scale_amount_curve = SubResource("Curve_xx81n")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1121651379]
+position = Vector2(0, -3)
+sprite_frames = SubResource("SpriteFrames_kggx2")
+animation = &"walk"
+centered = false
+offset = Vector2(-16, -18)
+
+[node name="StateMachine" type="Node2D" parent="." unique_id=942379208 node_paths=PackedStringArray("entity")]
+script = ExtResource("3_ktjr4")
+default_state = "Walking"
+entity = NodePath("..")
+metadata/_custom_type_script = "uid://drpttt3optl3r"
+
+[node name="Walking" type="Node2D" parent="StateMachine" unique_id=504939297 node_paths=PackedStringArray("sprite", "walk_particles")]
+script = ExtResource("4_7wueq")
+sprite = NodePath("../../Sprite2D")
+walk_particles = NodePath("../../WalkParticles")
+metadata/_custom_type_script = "uid://bpqjpkhit0v31"
+
+[node name="Rolling" type="Node2D" parent="StateMachine" unique_id=1706530067 node_paths=PackedStringArray("sprite", "dust_particles")]
+script = ExtResource("5_oomub")
+sprite = NodePath("../../Sprite2D")
+dust_particles = NodePath("../../DustParticles")
+metadata/_custom_type_script = "uid://bpqjpkhit0v31"
