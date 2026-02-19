@@ -1,4 +1,4 @@
-extends State
+extends PlayerState
 
 @export var sprite: AnimatedSprite2D
 @export var dust_particles: CPUParticles2D
@@ -8,11 +8,8 @@ const DURATION = 0.3
 
 var time = 0.0
 
-var player: Player
-
 func _ready() -> void:
 	super()
-	player = entity as Player
 
 func _on_enter_state():
 	time = DURATION
@@ -22,12 +19,9 @@ func _on_exit_state():
 	sprite.rotation = 0.0
 	dust_particles.emitting = false
 
-func _process(delta: float) -> void:
-	time = max(0.0, time - delta)
-	if time <= 0.0:
-		state_machine.set_state("Walking")
-
 func _physics_process(delta: float) -> void:
+	super(delta)
+	
 	player.velocity = player.walk_direction * SPEED
 	player.move_and_slide()
 	
@@ -35,3 +29,11 @@ func _physics_process(delta: float) -> void:
 	if player.walk_direction.x < 0:
 		sign = -1
 	sprite.rotation += sign * delta * (TAU /DURATION)
+	
+	time = max(0.0, time - delta)
+	if time <= 0.0:
+		state_machine.set_state("Walking")
+	
+	if Input.is_action_just_pressed("game_secondary"):
+		state_machine.set_state("Rolling")
+	

@@ -24,11 +24,13 @@ func set_state(name: String):
 	assert(node is AbstractState, "Node '" + str(name) + "' isn't an AbstractState")
 	
 	if current_state:
+		current_state.is_in_state = false
 		current_state.exit_state.emit()
 		current_state._on_exit_state()
 		current_state.process_mode = Node.PROCESS_MODE_DISABLED
-		
+	
 	node.process_mode = Node.PROCESS_MODE_INHERIT
+	node.is_in_state = true
 	node._on_enter_state()
 	node.enter_state.emit()
 	

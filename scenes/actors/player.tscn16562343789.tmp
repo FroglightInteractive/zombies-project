@@ -31,17 +31,9 @@ region = Rect2(128, 0, 32, 32)
 atlas = ExtResource("1_3vyb7")
 region = Rect2(192, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_t62v4"]
-atlas = ExtResource("1_3vyb7")
-region = Rect2(224, 0, 32, 32)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_h5w3c"]
 atlas = ExtResource("1_3vyb7")
 region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_uqfkb"]
-atlas = ExtResource("1_3vyb7")
-region = Rect2(224, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xx81n"]
 atlas = ExtResource("1_3vyb7")
@@ -85,9 +77,6 @@ animations = [{
 "texture": SubResource("AtlasTexture_nmlhc")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_t62v4")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_h5w3c")
 }],
 "loop": false,
@@ -96,22 +85,11 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_uqfkb")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_xx81n")
 }],
-"loop": false,
-"name": &"enter_idle",
-"speed": 15.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xx81n")
-}],
-"loop": false,
-"name": &"idle",
-"speed": 15.0
+"loop": true,
+"name": &"default",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -193,11 +171,12 @@ scale_amount_curve = SubResource("Curve_xx81n")
 color_initial_ramp = SubResource("Gradient_7860b")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1121651379]
-position = Vector2(0, -2)
+position = Vector2(0, -3)
 sprite_frames = SubResource("SpriteFrames_kggx2")
-animation = &"idle"
+animation = &"inhaling"
+frame_progress = 0.79196095
 centered = false
-offset = Vector2(-16, -20)
+offset = Vector2(-16, -18)
 
 [node name="InhaleArea" type="Area2D" parent="." unique_id=1215968046]
 
@@ -206,7 +185,6 @@ shape = SubResource("RectangleShape2D_0w4p8")
 
 [node name="InhaleDustParticles" type="CPUParticles2D" parent="InhaleArea" unique_id=587278326]
 position = Vector2(1, 0)
-emitting = false
 amount = 10
 texture = ExtResource("3_8y416")
 lifetime = 0.35000000000000003
@@ -224,7 +202,6 @@ color_initial_ramp = SubResource("Gradient_7860b")
 [node name="InhaleParticles" type="CPUParticles2D" parent="InhaleArea" unique_id=1286825424]
 material = SubResource("CanvasItemMaterial_0w4p8")
 position = Vector2(74, 0)
-emitting = false
 amount = 10
 texture = ExtResource("4_0w4p8")
 lifetime = 0.3

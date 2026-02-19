@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4hs28rhid1ie"
-path="res://.godot/imported/player_walk.png-d84299976f4eb6ade966efc7c869f220.ctex"
+uid="uid://cgje6abrtp3g8"
+path="res://.godot/imported/speed_line.png-98b80aca9c5ab28630c6b40d0baf00dc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/player_walk.png"
-dest_files=["res://.godot/imported/player_walk.png-d84299976f4eb6ade966efc7c869f220.ctex"]
+source_file="res://assets/images/speed_line.png"
+dest_files=["res://.godot/imported/speed_line.png-98b80aca9c5ab28630c6b40d0baf00dc.ctex"]
 
 [params]
 

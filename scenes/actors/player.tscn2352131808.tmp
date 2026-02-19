@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://cccvl8jupn5qs" path="res://scenes/actors/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://bmaipib8dmfy" path="res://assets/images/dust.png" id="3_8y416"]
 [ext_resource type="Script" uid="uid://drpttt3optl3r" path="res://scenes/components/state_machine/state_machine.gd" id="3_ktjr4"]
-[ext_resource type="Texture2D" uid="uid://cgje6abrtp3g8" path="res://assets/images/speed_line.png" id="4_0w4p8"]
 [ext_resource type="Script" uid="uid://tjtxruw00jmt" path="res://scenes/actors/state_walking.gd" id="4_7wueq"]
 [ext_resource type="Script" uid="uid://d0cchv25mg772" path="res://scenes/actors/state_rolling.gd" id="5_oomub"]
 [ext_resource type="Script" uid="uid://c8tknylpntdw3" path="res://scenes/actors/state_idle.gd" id="5_xx81n"]
@@ -29,31 +28,15 @@ region = Rect2(128, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nmlhc"]
 atlas = ExtResource("1_3vyb7")
-region = Rect2(192, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t62v4"]
-atlas = ExtResource("1_3vyb7")
-region = Rect2(224, 0, 32, 32)
+region = Rect2(160, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h5w3c"]
 atlas = ExtResource("1_3vyb7")
 region = Rect2(0, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_uqfkb"]
-atlas = ExtResource("1_3vyb7")
-region = Rect2(224, 0, 32, 32)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_xx81n"]
 atlas = ExtResource("1_3vyb7")
 region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0878f"]
-atlas = ExtResource("1_3vyb7")
-region = Rect2(128, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dferu"]
-atlas = ExtResource("1_3vyb7")
-region = Rect2(160, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kggx2"]
 atlas = ExtResource("1_3vyb7")
@@ -85,9 +68,6 @@ animations = [{
 "texture": SubResource("AtlasTexture_nmlhc")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_t62v4")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_h5w3c")
 }],
 "loop": false,
@@ -96,33 +76,11 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_uqfkb")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_xx81n")
-}],
-"loop": false,
-"name": &"enter_idle",
-"speed": 15.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xx81n")
-}],
-"loop": false,
-"name": &"idle",
-"speed": 15.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0878f")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dferu")
 }],
 "loop": true,
-"name": &"inhaling",
-"speed": 20.0
+"name": &"default",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -152,12 +110,6 @@ animations = [{
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0w4p8"]
 size = Vector2(1.5, 20)
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0w4p8"]
-particles_animation = true
-particles_anim_h_frames = 8
-particles_anim_v_frames = 1
-particles_anim_loop = false
 
 [node name="Player" type="CharacterBody2D" unique_id=1160419393]
 script = ExtResource("1_g2els")
@@ -193,55 +145,20 @@ scale_amount_curve = SubResource("Curve_xx81n")
 color_initial_ramp = SubResource("Gradient_7860b")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1121651379]
-position = Vector2(0, -2)
+position = Vector2(0, -5)
 sprite_frames = SubResource("SpriteFrames_kggx2")
-animation = &"idle"
+animation = &"close_mouth"
 centered = false
-offset = Vector2(-16, -20)
+offset = Vector2(-16, -18)
 
 [node name="InhaleArea" type="Area2D" parent="." unique_id=1215968046]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InhaleArea" unique_id=667900237]
 shape = SubResource("RectangleShape2D_0w4p8")
 
-[node name="InhaleDustParticles" type="CPUParticles2D" parent="InhaleArea" unique_id=587278326]
-position = Vector2(1, 0)
-emitting = false
-amount = 10
-texture = ExtResource("3_8y416")
-lifetime = 0.35000000000000003
-randomness = 0.19
-emission_shape = 1
-emission_sphere_radius = 20.0
-spread = 0.0
-gravity = Vector2(0, 0)
-radial_accel_min = -200.0
-radial_accel_max = -50.0
-scale_amount_min = 0.05
-scale_amount_max = 0.2
-color_initial_ramp = SubResource("Gradient_7860b")
-
-[node name="InhaleParticles" type="CPUParticles2D" parent="InhaleArea" unique_id=1286825424]
-material = SubResource("CanvasItemMaterial_0w4p8")
-position = Vector2(74, 0)
-emitting = false
-amount = 10
-texture = ExtResource("4_0w4p8")
-lifetime = 0.3
-emission_shape = 3
-emission_rect_extents = Vector2(10, 10)
-particle_flag_align_y = true
-direction = Vector2(-1, 0)
-spread = 0.0
-gravity = Vector2(0, 0)
-initial_velocity_min = 256.0
-initial_velocity_max = 256.0
-color_initial_ramp = SubResource("Gradient_7860b")
-anim_offset_max = 1.0
-
 [node name="StateMachine" type="Node2D" parent="." unique_id=942379208 node_paths=PackedStringArray("entity")]
 script = ExtResource("3_ktjr4")
-default_state = "Idle"
+default_state = "Walking"
 entity = NodePath("..")
 metadata/_custom_type_script = "uid://drpttt3optl3r"
 
@@ -262,10 +179,7 @@ sprite = NodePath("../../Sprite2D")
 dust_particles = NodePath("../../DustParticles")
 metadata/_custom_type_script = "uid://bpqjpkhit0v31"
 
-[node name="Inhaling" type="Node2D" parent="StateMachine" unique_id=183935234 node_paths=PackedStringArray("sprite", "inhale_area", "inhale_particles", "inhale_dust_particles")]
+[node name="Inhaling" type="Node2D" parent="StateMachine" unique_id=183935234 node_paths=PackedStringArray("sprite")]
 script = ExtResource("9_0w4p8")
 sprite = NodePath("../../Sprite2D")
-inhale_area = NodePath("../../InhaleArea")
-inhale_particles = NodePath("../../InhaleArea/InhaleParticles")
-inhale_dust_particles = NodePath("../../InhaleArea/InhaleDustParticles")
 metadata/_custom_type_script = "uid://bpqjpkhit0v31"

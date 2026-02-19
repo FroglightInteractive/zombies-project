@@ -4,6 +4,7 @@
 
 [node name="Main" type="Node2D" unique_id=1062764275]
 
-[node name="Player" parent="." unique_id=1160419393 instance=ExtResource("1_o5qli")]
-
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1738053152]
+
+[node name="Player" parent="." unique_id=1160419393 instance=ExtResource("1_o5qli")]
+position = Vector2(75, 63)
