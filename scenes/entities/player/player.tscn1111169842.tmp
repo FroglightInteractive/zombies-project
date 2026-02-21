@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://bfml67xti40y0"]
 
 [ext_resource type="Texture2D" uid="uid://dultr1g56loyw" path="res://assets/images/player.png" id="1_3vyb7"]
-[ext_resource type="Script" uid="uid://cccvl8jupn5qs" path="res://scenes/actors/player.gd" id="1_g2els"]
+[ext_resource type="Script" uid="uid://cccvl8jupn5qs" path="res://scenes/entities/player/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://bmaipib8dmfy" path="res://assets/images/dust.png" id="3_8y416"]
 [ext_resource type="Script" uid="uid://drpttt3optl3r" path="res://scenes/components/state_machine/state_machine.gd" id="3_ktjr4"]
 [ext_resource type="Texture2D" uid="uid://cgje6abrtp3g8" path="res://assets/images/speed_line.png" id="4_0w4p8"]
-[ext_resource type="Script" uid="uid://tjtxruw00jmt" path="res://scenes/actors/state_walking.gd" id="4_7wueq"]
-[ext_resource type="Script" uid="uid://d0cchv25mg772" path="res://scenes/actors/state_rolling.gd" id="5_oomub"]
-[ext_resource type="Script" uid="uid://c8tknylpntdw3" path="res://scenes/actors/state_idle.gd" id="5_xx81n"]
-[ext_resource type="Script" uid="uid://1r1kfnpc6d0y" path="res://scenes/actors/state_inhaling.gd" id="9_0w4p8"]
+[ext_resource type="Script" uid="uid://tjtxruw00jmt" path="res://scenes/entities/player/state_walking.gd" id="4_7wueq"]
+[ext_resource type="Script" uid="uid://d0cchv25mg772" path="res://scenes/entities/player/state_rolling.gd" id="5_oomub"]
+[ext_resource type="Script" uid="uid://c8tknylpntdw3" path="res://scenes/entities/player/state_idle.gd" id="5_xx81n"]
+[ext_resource type="Script" uid="uid://1r1kfnpc6d0y" path="res://scenes/entities/player/state_inhaling.gd" id="9_0w4p8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g2els"]
 radius = 8.0
@@ -150,17 +150,20 @@ animations = [{
 "speed": 15.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0w4p8"]
-size = Vector2(1.5, 20)
-
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0w4p8"]
 particles_animation = true
 particles_anim_h_frames = 8
 particles_anim_v_frames = 1
 particles_anim_loop = false
 
-[node name="Player" type="CharacterBody2D" unique_id=1160419393]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0w4p8"]
+size = Vector2(1.5, 20)
+
+[node name="Player" type="CharacterBody2D" unique_id=1160419393 node_paths=PackedStringArray("inhale_area", "inhale_particles", "inhale_dust_particles")]
 script = ExtResource("1_g2els")
+inhale_area = NodePath("Inhale/InhaleArea")
+inhale_particles = NodePath("Inhale/InhaleParticles")
+inhale_dust_particles = NodePath("Inhale/InhaleDustParticles")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1465140987]
 shape = SubResource("CircleShape2D_g2els")
@@ -199,13 +202,10 @@ animation = &"idle"
 centered = false
 offset = Vector2(-16, -20)
 
-[node name="InhaleArea" type="Area2D" parent="." unique_id=1215968046]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InhaleArea" unique_id=667900237]
-shape = SubResource("RectangleShape2D_0w4p8")
-
-[node name="InhaleDustParticles" type="CPUParticles2D" parent="InhaleArea" unique_id=587278326]
+[node name="Inhale" type="Node2D" parent="." unique_id=1559149712]
 position = Vector2(1, 0)
+
+[node name="InhaleDustParticles" type="CPUParticles2D" parent="Inhale" unique_id=587278326]
 emitting = false
 amount = 10
 texture = ExtResource("3_8y416")
@@ -221,9 +221,9 @@ scale_amount_min = 0.05
 scale_amount_max = 0.2
 color_initial_ramp = SubResource("Gradient_7860b")
 
-[node name="InhaleParticles" type="CPUParticles2D" parent="InhaleArea" unique_id=1286825424]
+[node name="InhaleParticles" type="CPUParticles2D" parent="Inhale" unique_id=1286825424]
 material = SubResource("CanvasItemMaterial_0w4p8")
-position = Vector2(74, 0)
+position = Vector2(73, 0)
 emitting = false
 amount = 10
 texture = ExtResource("4_0w4p8")
@@ -238,6 +238,13 @@ initial_velocity_min = 256.0
 initial_velocity_max = 256.0
 color_initial_ramp = SubResource("Gradient_7860b")
 anim_offset_max = 1.0
+
+[node name="InhaleArea" type="Area2D" parent="Inhale" unique_id=1215968046]
+process_mode = 4
+position = Vector2(-1, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Inhale/InhaleArea" unique_id=667900237]
+shape = SubResource("RectangleShape2D_0w4p8")
 
 [node name="StateMachine" type="Node2D" parent="." unique_id=942379208 node_paths=PackedStringArray("entity")]
 script = ExtResource("3_ktjr4")
@@ -262,10 +269,11 @@ sprite = NodePath("../../Sprite2D")
 dust_particles = NodePath("../../DustParticles")
 metadata/_custom_type_script = "uid://bpqjpkhit0v31"
 
-[node name="Inhaling" type="Node2D" parent="StateMachine" unique_id=183935234 node_paths=PackedStringArray("sprite", "inhale_area", "inhale_particles", "inhale_dust_particles")]
+[node name="Inhaling" type="Node2D" parent="StateMachine" unique_id=183935234 node_paths=PackedStringArray("sprite", "inhale", "inhale_area", "inhale_particles", "inhale_dust_particles")]
 script = ExtResource("9_0w4p8")
 sprite = NodePath("../../Sprite2D")
-inhale_area = NodePath("../../InhaleArea")
-inhale_particles = NodePath("../../InhaleArea/InhaleParticles")
-inhale_dust_particles = NodePath("../../InhaleArea/InhaleDustParticles")
+inhale = NodePath("../../Inhale")
+inhale_area = NodePath("../../Inhale/InhaleArea")
+inhale_particles = NodePath("../../Inhale/InhaleParticles")
+inhale_dust_particles = NodePath("../../Inhale/InhaleDustParticles")
 metadata/_custom_type_script = "uid://bpqjpkhit0v31"

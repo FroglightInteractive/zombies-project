@@ -1,6 +1,6 @@
 extends PlayerState
 
-@export var sprite: AnimatedSprite2D
+@export var visuals: StackedAnimatedSprite
 @export var walk_particles: CPUParticles2D
 
 const IDLE_VELOCITY_THRESHOLD = 4.0
@@ -19,20 +19,25 @@ func _physics_process(delta: float) -> void:
 		player.walk_direction = input_direction.normalized()
 	player.move_and_slide()
 	
-	sprite.flip_h = player.walk_direction.x < 0
+	# I'm doing two if's to specifically exclude the case where walk_direction.x = 0.
+	if player.walk_direction.x < 0:
+		visuals.flip_h = true
+	if player.walk_direction.x > 0:
+		visuals.flip_h = false
+	
 	walk_particles.emitting = true
 	
 	if not input_direction and player.velocity.length() < IDLE_VELOCITY_THRESHOLD:
 		state_machine.set_state("Idle")
 	
-	if Input.is_action_just_pressed("game_action"):
+	if Input.is_action_just_pressed("game_action") and not player.has_captured_entity():
 		state_machine.set_state("Inhaling")
 	
-	if Input.is_action_just_pressed("game_secondary"):
+	if Input.is_action_just_pressed("game_dash"):
 		state_machine.set_state("Rolling")
 
 func _on_enter_state():
-	sprite.play("walk")
+	visuals.play("walk")
 
 func _on_exit_state():
 	walk_particles.emitting = false

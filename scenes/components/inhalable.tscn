@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dvube5c2o5lo3"]
+
+[ext_resource type="Script" uid="uid://wasomoq27gie" path="res://scenes/components/inhalable.gd" id="1_lw8ic"]
+
+[node name="Inhalable" type="Area2D" unique_id=1511747168]
+script = ExtResource("1_lw8ic")
