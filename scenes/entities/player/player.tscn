@@ -535,20 +535,22 @@ sprite_name_to_texture = Dictionary[StringName, Texture2D]({
 [node name="BodySprite" type="AnimatedSprite2D" parent="Visuals" unique_id=379984882]
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_7wli1")
-animation = &"close_mouth"
+animation = &"idle"
 centered = false
 offset = Vector2(-16, -20)
 
 [node name="FaceSprite" type="AnimatedSprite2D" parent="Visuals" unique_id=96624566]
+visible = false
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_brjyi")
+animation = &"idle"
 centered = false
 offset = Vector2(-16, -20)
 
 [node name="FaceSpriteMouthFull" type="AnimatedSprite2D" parent="Visuals" unique_id=346793372]
-visible = false
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_o8jto")
+animation = &"idle"
 centered = false
 offset = Vector2(-16, -20)
 
