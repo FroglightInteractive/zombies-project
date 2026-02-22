@@ -3,9 +3,9 @@ extends PlayerState
 @export var visuals: StackedAnimatedSprite
 @export var walk_particles: CPUParticles2D
 
-const IDLE_VELOCITY_THRESHOLD = 4.0
-const ACCELERATION = 1500.0
-const SPEED = 150.0
+@export var idle_velocity_threshold = 4.0
+@export var acceleration = 1500.0
+@export var speed = 150.0
 
 func _ready() -> void:
 	super()
@@ -15,7 +15,7 @@ func _physics_process(delta: float) -> void:
 	
 	var input_direction = Input.get_vector("game_left", "game_right", "game_up", "game_down")
 	if input_direction:
-		player.velocity = player.velocity.move_toward(input_direction*SPEED, ACCELERATION*delta)
+		player.velocity = player.velocity.move_toward(input_direction*speed, acceleration*delta)
 		player.walk_direction = input_direction.normalized()
 	player.move_and_slide()
 	
@@ -27,7 +27,7 @@ func _physics_process(delta: float) -> void:
 	
 	walk_particles.emitting = true
 	
-	if not input_direction and player.velocity.length() < IDLE_VELOCITY_THRESHOLD:
+	if not input_direction and player.velocity.length() < idle_velocity_threshold:
 		state_machine.set_state("Idle")
 	
 	if Input.is_action_just_pressed("game_action") and not player.has_captured_entity():

@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://d0cchv25mg772" path="res://scenes/entities/player/state_rolling.gd" id="5_oomub"]
 [ext_resource type="Script" uid="uid://c8tknylpntdw3" path="res://scenes/entities/player/state_idle.gd" id="5_xx81n"]
 [ext_resource type="Texture2D" uid="uid://cyeyk4f8x8g4n" path="res://assets/images/player_face_mouthfull.png" id="6_j0oqr"]
+[ext_resource type="Script" uid="uid://biuwy7ynlvkhq" path="res://scenes/entities/player/vacuum_area.gd" id="8_xy2vv"]
 [ext_resource type="Script" uid="uid://1r1kfnpc6d0y" path="res://scenes/entities/player/state_inhaling.gd" id="9_0w4p8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g2els"]
@@ -479,12 +480,12 @@ particles_anim_loop = false
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0w4p8"]
 size = Vector2(1.5, 20)
 
-[node name="Player" type="CharacterBody2D" unique_id=1160419393 node_paths=PackedStringArray("visuals", "inhale_area", "inhale_particles", "inhale_dust_particles")]
+[node name="Player" type="CharacterBody2D" unique_id=1160419393 node_paths=PackedStringArray("visuals", "vacuum_area", "vacuum_particles", "vacuum_dust_particles")]
 script = ExtResource("1_g2els")
 visuals = NodePath("Visuals")
-inhale_area = NodePath("Inhale/InhaleArea")
-inhale_particles = NodePath("Inhale/InhaleParticles")
-inhale_dust_particles = NodePath("Inhale/InhaleDustParticles")
+vacuum_area = NodePath("Vacuum/VacuumArea")
+vacuum_particles = NodePath("Vacuum/VacuumParticles")
+vacuum_dust_particles = NodePath("Vacuum/VacuumDustParticles")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1465140987]
 shape = SubResource("CircleShape2D_g2els")
@@ -540,7 +541,6 @@ centered = false
 offset = Vector2(-16, -20)
 
 [node name="FaceSprite" type="AnimatedSprite2D" parent="Visuals" unique_id=96624566]
-visible = false
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_brjyi")
 animation = &"idle"
@@ -548,16 +548,17 @@ centered = false
 offset = Vector2(-16, -20)
 
 [node name="FaceSpriteMouthFull" type="AnimatedSprite2D" parent="Visuals" unique_id=346793372]
+visible = false
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_o8jto")
 animation = &"idle"
 centered = false
 offset = Vector2(-16, -20)
 
-[node name="Inhale" type="Node2D" parent="." unique_id=1559149712]
+[node name="Vacuum" type="Node2D" parent="." unique_id=1559149712]
 position = Vector2(1, 0)
 
-[node name="InhaleDustParticles" type="CPUParticles2D" parent="Inhale" unique_id=587278326]
+[node name="VacuumDustParticles" type="CPUParticles2D" parent="Vacuum" unique_id=587278326]
 emitting = false
 amount = 10
 texture = ExtResource("3_8y416")
@@ -573,11 +574,11 @@ scale_amount_min = 0.05
 scale_amount_max = 0.2
 color_initial_ramp = SubResource("Gradient_7860b")
 
-[node name="InhaleParticles" type="CPUParticles2D" parent="Inhale" unique_id=1286825424]
+[node name="VacuumParticles" type="CPUParticles2D" parent="Vacuum" unique_id=1286825424]
 material = SubResource("CanvasItemMaterial_0w4p8")
 position = Vector2(73, 0)
 emitting = false
-amount = 10
+amount = 20
 texture = ExtResource("4_0w4p8")
 lifetime = 0.3
 emission_shape = 3
@@ -591,16 +592,20 @@ initial_velocity_max = 256.0
 color_initial_ramp = SubResource("Gradient_7860b")
 anim_offset_max = 1.0
 
-[node name="InhaleArea" type="Area2D" parent="Inhale" unique_id=1215968046]
+[node name="VacuumArea" type="Area2D" parent="Vacuum" unique_id=1231334077 node_paths=PackedStringArray("entity")]
 process_mode = 4
 position = Vector2(-1, 0)
+script = ExtResource("8_xy2vv")
+entity = NodePath("../..")
+damage = 0.0
+metadata/_custom_type_script = "uid://cyn16ubhn38rx"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Inhale/InhaleArea" unique_id=667900237]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Vacuum/VacuumArea" unique_id=667900237]
 shape = SubResource("RectangleShape2D_0w4p8")
 
 [node name="StateMachine" type="Node2D" parent="." unique_id=942379208 node_paths=PackedStringArray("entity")]
 script = ExtResource("3_ktjr4")
-default_state = "Idle"
+default_state = &"Idle"
 entity = NodePath("..")
 metadata/_custom_type_script = "uid://drpttt3optl3r"
 
@@ -621,11 +626,11 @@ visuals = NodePath("../../Visuals")
 dust_particles = NodePath("../../DustParticles")
 metadata/_custom_type_script = "uid://bpqjpkhit0v31"
 
-[node name="Inhaling" type="Node2D" parent="StateMachine" unique_id=183935234 node_paths=PackedStringArray("visuals", "inhale", "inhale_area", "inhale_particles", "inhale_dust_particles")]
+[node name="Inhaling" type="Node2D" parent="StateMachine" unique_id=183935234 node_paths=PackedStringArray("visuals", "vacuum", "vacuum_area", "vacuum_particles", "vacuum_dust_particles")]
 script = ExtResource("9_0w4p8")
 visuals = NodePath("../../Visuals")
-inhale = NodePath("../../Inhale")
-inhale_area = NodePath("../../Inhale/InhaleArea")
-inhale_particles = NodePath("../../Inhale/InhaleParticles")
-inhale_dust_particles = NodePath("../../Inhale/InhaleDustParticles")
+vacuum = NodePath("../../Vacuum")
+vacuum_area = NodePath("../../Vacuum/VacuumArea")
+vacuum_particles = NodePath("../../Vacuum/VacuumParticles")
+vacuum_dust_particles = NodePath("../../Vacuum/VacuumDustParticles")
 metadata/_custom_type_script = "uid://bpqjpkhit0v31"

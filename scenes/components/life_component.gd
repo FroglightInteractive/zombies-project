@@ -43,7 +43,7 @@ func damage(amount: float, ignore_cooldown = false) -> void:
 		return
 	
 	set_life(life - amount)
-	healed.emit(amount)
+	damaged.emit(amount)
 	
 	if not ignore_cooldown:
 		set_cooldown(damage_cooldown)

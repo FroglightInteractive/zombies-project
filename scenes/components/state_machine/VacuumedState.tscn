@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://lcrx40kef4ok"]
+
+[ext_resource type="Script" uid="uid://hq3hve0msv3h" path="res://scenes/components/state_machine/vacuumed_state.gd" id="1_duclt"]
+
+[node name="VacuumedState" type="Node2D" unique_id=51025964]
+script = ExtResource("1_duclt")
+metadata/_custom_type_script = "uid://j76sj18t8bt2"

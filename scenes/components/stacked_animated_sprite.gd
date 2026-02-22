@@ -53,7 +53,7 @@ func _ready() -> void:
 		assert(child is AnimatedSprite2D, "Node " + str(child.name) + " should be AnimatedSprite2D")
 		if child.name != reference_sprite.name:
 			assert(sprite_name_to_texture.has(child.name), "No entry in sprite_name_to_texture defined for " + str(child.name))
-		
+	
 	reference_sprite.animation_changed.connect(func(): animation_changed.emit())
 	reference_sprite.animation_finished.connect(func(): animation_finished.emit())
 	reference_sprite.animation_looped.connect(func(): animation_looped.emit())
