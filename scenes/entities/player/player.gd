@@ -1,6 +1,8 @@
 class_name Player
 extends Actor
 
+@export var block_inputs := false
+
 @export_category("Imports")
 @export var visuals: StackedAnimatedSprite
 @export var vacuum_area: VacuumArea 
@@ -18,7 +20,7 @@ extends Actor
 
 @export_category("Visuals")
 @export var squash_speed = 4.0
-@export var post_capture_squash = 1.3
+@export var post_capture_squash = 1.5
 
 var user_index = 0
 
@@ -65,8 +67,8 @@ func _process(delta: float) -> void:
 	set_aim_direction(direction)
 	
 	squash = move_toward(squash, 1.0, squash_speed * delta)
-	#if abs(squash - 1.0) < 0.01:
-		#squash = 1.0
+	if abs(squash - 1.0) < 0.01:
+		squash = 1.0
 	visuals.scale = Vector2(squash, 1/squash)
 
 func set_aim_direction(direction: Vector2):
@@ -81,6 +83,7 @@ func has_captured_entity():
 
 func exhale():
 	capturer_component.uncapture(aim_direction)
+	state_machine.set_state("Spitting")
 
 func _on_capturer_component_captured(new_captured_entity: Entity) -> void:
 	state_machine.set_state("Idle")
@@ -89,3 +92,18 @@ func _on_capturer_component_captured(new_captured_entity: Entity) -> void:
 
 func set_squash(value: float):
 	squash = value
+
+func get_vector(negative_x: StringName, positive_x: StringName, negative_y: StringName, positive_y: StringName, deadzone: float = -1.0) -> Vector2:
+	if block_inputs:
+		return Vector2.ZERO
+	return Input.get_vector(negative_x, positive_x, negative_y, positive_y, deadzone)
+
+func is_action_just_pressed(action: StringName, exact_match: bool = false) -> bool:
+	if block_inputs:
+		return false
+	return Input.is_action_just_pressed(action, exact_match)
+
+func is_action_just_released(action: StringName, exact_match: bool = false) -> bool:
+	if block_inputs:
+		return false
+	return Input.is_action_just_released(action, exact_match)

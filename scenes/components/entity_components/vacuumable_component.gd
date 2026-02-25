@@ -5,9 +5,16 @@ extends EntityComponent
 @export var vacuum_top_speed = 4000
 @export var finish_distance = 16
 
+@export_category("State & Hurtbox")
+@export var state_machine: StateMachine
+@export var hurtbox: Hurtbox
+@export var state_on_collision: StringName
+
 signal finished()
 signal finished_uncaptured()
 signal finished_captured(capturer: Entity)
+
+var use_states: bool = false
 
 var target: Node2D = null
 var target_area: VacuumArea = null
@@ -15,6 +22,12 @@ var vacuum_speed: float = 0.0
 
 func _ready() -> void:
 	super()
+	
+	if state_machine and hurtbox:
+		use_states = true
+	
+	if use_states:
+		hurtbox.recieved_damage.connect(_on_hurtbox_recieved_damage)
 
 func _physics_process(delta: float) -> void:
 	if not active:
@@ -52,3 +65,10 @@ func deactivate():
 
 func has_target() -> bool:
 	return target != null
+
+func _on_hurtbox_recieved_damage(area: Hitbox):
+	if area is VacuumArea:
+		state_machine.set_state(state_on_collision, {
+			"vacuum_attract_target": area.entity,
+			"vacuum_attract_area": area as VacuumArea,
+		}) 

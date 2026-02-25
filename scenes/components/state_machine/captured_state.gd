@@ -2,7 +2,9 @@ class_name CapturedState
 extends EntityState
 
 @export var capturable_component: CapturableComponent
+
 @export var state_on_uncapture: StringName
+@export var hide_entity_when_captured := true
 
 func _ready() -> void:
 	capturable_component.exited_capture.connect(_on_capturable_component_exited_capture)
@@ -16,9 +18,14 @@ func _on_enter_state(params: Dictionary = {}):
 	assert(params["capturer"].has_component("CapturerComponent"), "capturer has no CapturerComponent")
 	
 	params["capturer"].get_component("CapturerComponent").capture(entity)
+	if hide_entity_when_captured:
+		entity.hide()
 
 func _on_exit_state():
 	super()
+	
+	if hide_entity_when_captured:
+		entity.show()
 
 func _physics_process(delta: float) -> void:
 	super(delta)
@@ -27,3 +34,4 @@ func _on_capturable_component_exited_capture(direction: Vector2):
 	state_machine.set_state(state_on_uncapture, {
 		"direction": direction
 	})
+	

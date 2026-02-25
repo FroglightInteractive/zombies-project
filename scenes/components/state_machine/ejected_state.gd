@@ -8,6 +8,8 @@ func _ready() -> void:
 	super()
 	assert(ejectable_component, "ejectable_component is undefined")
 	assert(state_on_finished, "state_on_finished is undefined")
+	
+	ejectable_component.finished.connect(_on_ejectable_component_finished)
 
 func _physics_process(delta: float) -> void:
 	super(delta)
@@ -20,4 +22,8 @@ func _on_enter_state(params: Dictionary = {}):
 
 func _on_exit_state():
 	super()
-	ejectable_component.deactivate()
+	if ejectable_component.active:
+		ejectable_component.deactivate()
+
+func _on_ejectable_component_finished():
+	state_machine.set_state(state_on_finished)

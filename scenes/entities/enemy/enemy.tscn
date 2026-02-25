@@ -29,7 +29,10 @@ shape = SubResource("CircleShape2D_cmbxo")
 
 [node name="LifeComponent" parent="." unique_id=167689404 instance=ExtResource("3_ei073")]
 
-[node name="VacuumableComponent" parent="." unique_id=2108671917 instance=ExtResource("5_ilesx")]
+[node name="VacuumableComponent" parent="." unique_id=2108671917 node_paths=PackedStringArray("state_machine", "hurtbox") instance=ExtResource("5_ilesx")]
+state_machine = NodePath("../StateMachine")
+hurtbox = NodePath("../Hurtbox")
+state_on_collision = &"Vacuumed"
 
 [node name="CapturableComponent" parent="." unique_id=182143796 instance=ExtResource("4_frkcr")]
 
@@ -39,7 +42,7 @@ shape = SubResource("CircleShape2D_cmbxo")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=503721195]
 shape = SubResource("CircleShape2D_h26p2")
-debug_color = Color(0.9937579, 0, 0.23971313, 0.41960785)
+debug_color = Color(0.82714826, 0.39493513, 5.7756904e-07, 0.41960785)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1797748547]
 scale = Vector2(0.20312499, 0.20312499)

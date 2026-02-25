@@ -12,17 +12,17 @@ func _physics_process(delta: float) -> void:
 	if not visuals.is_playing():
 		visuals.play("idle")
 	
-	var input_direction = Input.get_vector("game_left", "game_right", "game_up", "game_down")
+	var input_direction = player.get_vector("game_left", "game_right", "game_up", "game_down")
 	if input_direction:
 		state_machine.set_state("Walking")
 	
-	if Input.is_action_just_pressed("game_action"):
+	if player.is_action_just_pressed("game_action"):
 		if player.has_captured_entity():
 			player.exhale()
 		else:
 			state_machine.set_state("Inhaling")
 	
-	if Input.is_action_just_pressed("game_dash"):
+	if player.is_action_just_pressed("game_dash"):
 		state_machine.set_state("Rolling")
 	
 	player.move_and_slide()

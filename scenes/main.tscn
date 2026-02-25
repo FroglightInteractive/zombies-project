@@ -88,5 +88,12 @@ tile_set = SubResource("TileSet_tbgi4")
 [node name="Player" parent="." unique_id=1160419393 instance=ExtResource("1_o5qli")]
 position = Vector2(75, 63)
 
+[node name="Player2" parent="." unique_id=922461548 instance=ExtResource("1_o5qli")]
+position = Vector2(170, 165)
+block_inputs = true
+
 [node name="Enemy" parent="." unique_id=722895607 instance=ExtResource("2_0wfyh")]
 position = Vector2(156, 68)
+
+[node name="Enemy2" parent="." unique_id=60935916 instance=ExtResource("2_0wfyh")]
+position = Vector2(204, 68)

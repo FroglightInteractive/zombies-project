@@ -31,6 +31,7 @@ func _physics_process(delta: float) -> void:
 	super(delta)
 	
 	player.walk_direction = player.aim_direction
+	vacuum_area.rotation = player.aim_angle
 	vacuum.rotation = player.aim_angle
 	
 	vacuum_particles.emitting = true
@@ -38,11 +39,11 @@ func _physics_process(delta: float) -> void:
 	
 	visuals.flip_h = player.aim_direction.x < 0
 	
-	if Input.is_action_just_released("game_action"):
+	if player.is_action_just_released("game_action"):
 		state_machine.set_state("Idle")
 		visuals.play("close_mouth")
 	
-	if Input.is_action_just_pressed("game_dash"):
+	if player.is_action_just_pressed("game_dash"):
 		state_machine.set_state("Rolling")
 	
 	player.move_and_slide()
