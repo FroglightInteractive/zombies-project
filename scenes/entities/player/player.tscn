@@ -658,6 +658,19 @@ scale_amount_max = 0.5
 scale_amount_curve = SubResource("Curve_xx81n")
 color_initial_ramp = SubResource("Gradient_7860b")
 
+[node name="EjectedParticles" type="CPUParticles2D" parent="." unique_id=1761187323]
+emitting = false
+amount = 30
+texture = ExtResource("3_8y416")
+lifetime = 0.4
+emission_shape = 1
+emission_sphere_radius = 6.2
+gravity = Vector2(0, 0)
+scale_amount_min = 0.3
+scale_amount_max = 0.5
+scale_amount_curve = SubResource("Curve_xx81n")
+color_initial_ramp = SubResource("Gradient_7860b")
+
 [node name="CapturerComponent" type="Node2D" parent="." unique_id=812343295]
 script = ExtResource("4_r4dfn")
 metadata/_custom_type_script = "uid://c4rw8aakdurjv"
@@ -670,6 +683,7 @@ state_on_collision = &"Vacuumed"
 [node name="CapturableComponent" parent="." unique_id=182143796 instance=ExtResource("6_w3p2j")]
 
 [node name="EjectableComponent" parent="." unique_id=776578125 instance=ExtResource("7_knby6")]
+max_bounces = 4
 
 [node name="Hurtbox" parent="." unique_id=1723729202 instance=ExtResource("8_fg2wu")]
 
@@ -800,9 +814,10 @@ state_on_captured = &"Captured"
 capturable_component = NodePath("../../CapturableComponent")
 state_on_uncapture = &"Ejected"
 
-[node name="Ejected" parent="StateMachine" unique_id=521408716 node_paths=PackedStringArray("ejectable_component") instance=ExtResource("20_7dqom")]
+[node name="Ejected" parent="StateMachine" unique_id=521408716 node_paths=PackedStringArray("ejectable_component", "particles") instance=ExtResource("20_7dqom")]
 ejectable_component = NodePath("../../EjectableComponent")
 state_on_finished = &"Idle"
+particles = NodePath("../../EjectedParticles")
 
 [connection signal="captured" from="CapturerComponent" to="." method="_on_capturer_component_captured"]
 [connection signal="recieved_damage" from="Hurtbox" to="." method="_on_hurtbox_recieved_damage"]

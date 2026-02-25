@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://b1dkuou1ki3ra"]
 
+[ext_resource type="Texture2D" uid="uid://bmaipib8dmfy" path="res://assets/images/dust.png" id="2_h0e4h"]
 [ext_resource type="Texture2D" uid="uid://q6mykvntp4ni" path="res://icon.svg" id="2_qkj82"]
 [ext_resource type="Script" uid="uid://be2ig028o6gpa" path="res://scenes/entities/enemy/enemy.gd" id="2_x2urn"]
 [ext_resource type="PackedScene" uid="uid://cdkvkbstvh6ef" path="res://scenes/components/life_component.tscn" id="3_ei073"]
@@ -16,6 +17,13 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_cmbxo"]
 radius = 11.045361
 
+[sub_resource type="Curve" id="Curve_jkr0c"]
+_data = [Vector2(0, 1), 0.0, -0.82866544, 0, 0, Vector2(1, 0), -0.88153005, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_sbss2"]
+colors = PackedColorArray(0.62160003, 0.6808, 0.74, 1, 1, 1, 1, 1)
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_h26p2"]
 radius = 16.0
 
@@ -27,6 +35,19 @@ deceleration = 500.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=671228925]
 shape = SubResource("CircleShape2D_cmbxo")
 
+[node name="EjectedParticles" type="CPUParticles2D" parent="." unique_id=1184248200]
+emitting = false
+amount = 30
+texture = ExtResource("2_h0e4h")
+lifetime = 0.4
+emission_shape = 1
+emission_sphere_radius = 6.2
+gravity = Vector2(0, 0)
+scale_amount_min = 0.3
+scale_amount_max = 0.5
+scale_amount_curve = SubResource("Curve_jkr0c")
+color_initial_ramp = SubResource("Gradient_sbss2")
+
 [node name="LifeComponent" parent="." unique_id=167689404 instance=ExtResource("3_ei073")]
 
 [node name="VacuumableComponent" parent="." unique_id=2108671917 node_paths=PackedStringArray("state_machine", "hurtbox") instance=ExtResource("5_ilesx")]
@@ -37,6 +58,7 @@ state_on_collision = &"Vacuumed"
 [node name="CapturableComponent" parent="." unique_id=182143796 instance=ExtResource("4_frkcr")]
 
 [node name="EjectableComponent" parent="." unique_id=776578125 instance=ExtResource("5_8ei1b")]
+max_bounces = 4
 
 [node name="Hurtbox" parent="." unique_id=1391892694 instance=ExtResource("6_ddkys")]
 
@@ -70,10 +92,11 @@ capturable_component = NodePath("../../CapturableComponent")
 state_on_uncapture = &"Ejected"
 metadata/_custom_type_script = "uid://dotb5rramnj33"
 
-[node name="Ejected" type="Node2D" parent="StateMachine" unique_id=1450873267 node_paths=PackedStringArray("ejectable_component")]
+[node name="Ejected" type="Node2D" parent="StateMachine" unique_id=1450873267 node_paths=PackedStringArray("ejectable_component", "particles")]
 script = ExtResource("12_frkcr")
 ejectable_component = NodePath("../../EjectableComponent")
 state_on_finished = &"Idle"
+particles = NodePath("../../EjectedParticles")
 metadata/_custom_type_script = "uid://gr7h44ctgg1j"
 
 [node name="Label" type="Label" parent="." unique_id=1907289726]

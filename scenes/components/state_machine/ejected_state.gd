@@ -3,6 +3,7 @@ extends EntityState
 
 @export var ejectable_component: EjectableComponent
 @export var state_on_finished: StringName
+@export var particles: CPUParticles2D
 
 func _ready() -> void:
 	super()
@@ -13,17 +14,27 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	super(delta)
+	
+	entity.rotate(20.0 * delta)
 
 func _on_enter_state(params: Dictionary = {}):
 	assert(params.has("direction") and params["direction"], "No direction param")
 	
 	super(params)
 	ejectable_component.activate(params["direction"])
+	
+	if particles:
+		particles.emitting = true
 
 func _on_exit_state():
 	super()
 	if ejectable_component.active:
 		ejectable_component.deactivate()
+	
+	entity.rotation = 0.0
+	
+	if particles:
+		particles.emitting = false
 
 func _on_ejectable_component_finished():
 	state_machine.set_state(state_on_finished)

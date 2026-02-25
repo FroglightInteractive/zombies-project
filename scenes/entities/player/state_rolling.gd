@@ -7,6 +7,7 @@ const SPEED = 300.0
 const DURATION = 0.3
 
 var time = 0.0
+var direction := Vector2.RIGHT
 
 func _ready() -> void:
 	super()
@@ -14,6 +15,7 @@ func _ready() -> void:
 func _on_enter_state(params: Dictionary = {}):
 	super(params)
 	time = DURATION
+	direction = player.aim_direction
 
 func _on_exit_state():
 	super()
@@ -23,13 +25,13 @@ func _on_exit_state():
 func _physics_process(delta: float) -> void:
 	super(delta)
 	
-	player.velocity = player.walk_direction * SPEED
+	player.velocity = direction * SPEED
 	player.move_and_slide()
 	
 	dust_particles.emitting = true
 	
 	var sign = 1
-	if player.walk_direction.x < 0:
+	if direction.x < 0:
 		sign = -1
 	visuals.rotation += sign * delta * (TAU /DURATION)
 	
