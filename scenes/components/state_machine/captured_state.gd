@@ -1,0 +1,29 @@
+class_name CapturedState
+extends EntityState
+
+@export var capturable_component: CapturableComponent
+@export var state_on_uncapture: StringName
+
+func _ready() -> void:
+	capturable_component.exited_capture.connect(_on_capturable_component_exited_capture)
+	super()
+
+func _on_enter_state(params: Dictionary = {}):
+	super(params)
+	assert(capturable_component, "capturable_component is undefined")
+	assert(params.has("capturer") and params["capturer"], "Entered state without capturer param")
+	assert(params["capturer"] is Entity, "capturer is not Entity")
+	assert(params["capturer"].has_component("CapturerComponent"), "capturer has no CapturerComponent")
+	
+	params["capturer"].get_component("CapturerComponent").capture(entity)
+
+func _on_exit_state():
+	super()
+
+func _physics_process(delta: float) -> void:
+	super(delta)
+
+func _on_capturable_component_exited_capture(direction: Vector2):
+	state_machine.set_state(state_on_uncapture, {
+		"direction": direction
+	})

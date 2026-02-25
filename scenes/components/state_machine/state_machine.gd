@@ -26,7 +26,7 @@ func _ready() -> void:
 		set_state(default_state)
 
 
-func set_state(name: StringName):
+func set_state(name: StringName, params: Dictionary = {}):
 	var node = get_node_or_null(str(name))
 	assert(node, "Invalid state: '" + str(name) + "'")
 	assert(node is AbstractState, "Node '" + str(name) + "' isn't an AbstractState")
@@ -42,7 +42,7 @@ func set_state(name: StringName):
 	
 	node.process_mode = Node.PROCESS_MODE_INHERIT
 	node.is_in_state = true
-	node._on_enter_state()
+	node._on_enter_state(params)
 	node.enter_state.emit()
 	
 	current_state_name = name

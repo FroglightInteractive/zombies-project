@@ -4,14 +4,14 @@
 [ext_resource type="Script" uid="uid://be2ig028o6gpa" path="res://scenes/entities/enemy/enemy.gd" id="2_x2urn"]
 [ext_resource type="PackedScene" uid="uid://cdkvkbstvh6ef" path="res://scenes/components/life_component.tscn" id="3_ei073"]
 [ext_resource type="PackedScene" uid="uid://b5pl5ca7s0ywp" path="res://scenes/components/entity_components/capturable_component.tscn" id="4_frkcr"]
-[ext_resource type="PackedScene" uid="uid://du8bunvwp8ukg" path="res://scenes/components/entity_components/ejectable_component.tscn" id="5_8ei1b"]
 [ext_resource type="Script" uid="uid://lwa5j0jubmh6" path="res://scenes/entities/enemy/state_idle.gd" id="5_cmbxo"]
+[ext_resource type="PackedScene" uid="uid://du8bunvwp8ukg" path="res://scenes/components/entity_components/ejectable_component.tscn" id="5_frkcr"]
 [ext_resource type="PackedScene" uid="uid://dvube5c2o5lo3" path="res://scenes/components/entity_components/vacuumable_component.tscn" id="5_ilesx"]
 [ext_resource type="PackedScene" uid="uid://bk2oqqxxglu2n" path="res://scenes/components/hurtbox.tscn" id="6_ddkys"]
 [ext_resource type="PackedScene" uid="uid://costhn0s2oix6" path="res://scenes/components/state_machine/state_machine.tscn" id="7_ddkys"]
 [ext_resource type="Script" uid="uid://yk5j3l7455yv" path="res://scenes/entities/enemy/state_vacuumed.gd" id="9_ddkys"]
-[ext_resource type="Script" uid="uid://u603175l0nxr" path="res://scenes/entities/enemy/captured.gd" id="11_frkcr"]
-[ext_resource type="Script" uid="uid://gr7h44ctgg1j" path="res://scenes/components/state_machine/ejected_state.gd" id="12_frkcr"]
+[ext_resource type="Script" uid="uid://dotb5rramnj33" path="res://scenes/components/state_machine/captured_state.gd" id="9_h26p2"]
+[ext_resource type="Script" uid="uid://gr7h44ctgg1j" path="res://scenes/components/state_machine/ejected_state.gd" id="11_8ei1b"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_cmbxo"]
 radius = 11.045361
@@ -20,7 +20,8 @@ radius = 11.045361
 radius = 16.0
 
 [node name="Enemy" type="CharacterBody2D" unique_id=722895607]
-collision_mask = 2
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("2_x2urn")
 deceleration = 500.0
 
@@ -33,7 +34,7 @@ shape = SubResource("CircleShape2D_cmbxo")
 
 [node name="CapturableComponent" parent="." unique_id=182143796 instance=ExtResource("4_frkcr")]
 
-[node name="EjectableComponent" parent="." unique_id=776578125 instance=ExtResource("5_8ei1b")]
+[node name="EjectableComponent" parent="." unique_id=776578125 instance=ExtResource("5_frkcr")]
 
 [node name="Hurtbox" parent="." unique_id=1391892694 instance=ExtResource("6_ddkys")]
 
@@ -61,21 +62,12 @@ state_on_finished = &"Idle"
 state_on_captured = &"Captured"
 metadata/_custom_type_script = "uid://hq3hve0msv3h"
 
-[node name="Captured" type="Node2D" parent="StateMachine" unique_id=2003113997 node_paths=PackedStringArray("capturable_component")]
-script = ExtResource("11_frkcr")
-capturable_component = NodePath("../../CapturableComponent")
-state_on_uncapture = &"Ejected"
+[node name="Captured" type="Node2D" parent="StateMachine" unique_id=2003113997]
+script = ExtResource("9_h26p2")
 metadata/_custom_type_script = "uid://dotb5rramnj33"
 
-[node name="Ejected" type="Node2D" parent="StateMachine" unique_id=1450873267 node_paths=PackedStringArray("ejectable_component")]
-script = ExtResource("12_frkcr")
-ejectable_component = NodePath("../../EjectableComponent")
-state_on_finished = &"Idle"
+[node name="Ejected" type="Node2D" parent="StateMachine" unique_id=1277043395]
+script = ExtResource("11_8ei1b")
 metadata/_custom_type_script = "uid://gr7h44ctgg1j"
-
-[node name="Label" type="Label" parent="." unique_id=1907289726]
-visible = false
-offset_right = 40.0
-offset_bottom = 23.0
 
 [connection signal="recieved_damage" from="Hurtbox" to="." method="_on_hurtbox_recieved_damage"]

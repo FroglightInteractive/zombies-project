@@ -30,14 +30,19 @@ func _physics_process(delta: float) -> void:
 	if not input_direction and player.velocity.length() < idle_velocity_threshold:
 		state_machine.set_state("Idle")
 	
-	if Input.is_action_just_pressed("game_action") and not player.has_captured_entity():
-		state_machine.set_state("Inhaling")
+	if Input.is_action_just_pressed("game_action"):
+		if player.has_captured_entity():
+			player.exhale()
+		else:
+			state_machine.set_state("Inhaling")
 	
 	if Input.is_action_just_pressed("game_dash"):
 		state_machine.set_state("Rolling")
 
-func _on_enter_state():
+func _on_enter_state(params: Dictionary = {}):
+	super(params)
 	visuals.play("walk")
 
 func _on_exit_state():
+	super()
 	walk_particles.emitting = false

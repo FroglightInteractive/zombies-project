@@ -17,13 +17,16 @@ signal recieved_damage(area: Hitbox)
 func _ready() -> void:
 	pass
 
-func on_recieve_damage(hitbox: Hitbox):
+func on_hitbox_enter(hitbox: Hitbox):
 	if life_component and not life_component.can_damage():
 		return
 	if life_component:
 		life_component.damage(hitbox.damage)
 	
 	recieved_damage.emit(hitbox)
+
+func process_overlapping_hitbox(hitbox: Hitbox):
+	pass
 
 func is_hittable(hitbox: Hitbox):
 	if ignore_sibling_hitboxes and hitbox.get_parent() == get_parent():

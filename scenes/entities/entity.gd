@@ -2,10 +2,23 @@
 class_name Entity
 extends CharacterBody2D
 
-var vacuum_attract_target: Entity
+@export var deceleration := 1000.0
+
+var captured_entity: Entity
 var state_machine: StateMachine
 
 func _ready() -> void:
 	var node = get_node_or_null("StateMachine")
 	if node and node is StateMachine:
 		state_machine = node
+
+func has_component(component_name: StringName) -> bool:
+	var node = get_node_or_null(str(component_name))
+	return node != null and node is EntityComponent
+
+func get_component(component_name: StringName) -> EntityComponent:
+	var node = get_node_or_null(str(component_name))
+	assert(node, "Node doesn't exist")
+	assert(node is EntityComponent, "Node isn't an EntityComponent")
+	
+	return node

@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cgje6abrtp3g8" path="res://assets/images/speed_line.png" id="4_0w4p8"]
 [ext_resource type="Texture2D" uid="uid://cxv3mlm54naux" path="res://assets/images/player_face_normal.png" id="4_7wli1"]
 [ext_resource type="Script" uid="uid://tjtxruw00jmt" path="res://scenes/entities/player/state_walking.gd" id="4_7wueq"]
+[ext_resource type="Script" uid="uid://c4rw8aakdurjv" path="res://scenes/components/entity_components/capturer_component.gd" id="4_r4dfn"]
 [ext_resource type="Texture2D" uid="uid://dffxrdhsyg2ur" path="res://assets/images/player_body.png" id="5_j0oqr"]
 [ext_resource type="Script" uid="uid://d0cchv25mg772" path="res://scenes/entities/player/state_rolling.gd" id="5_oomub"]
 [ext_resource type="Script" uid="uid://c8tknylpntdw3" path="res://scenes/entities/player/state_idle.gd" id="5_xx81n"]
@@ -16,16 +17,6 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g2els"]
 radius = 8.0
-
-[sub_resource type="Curve" id="Curve_xx81n"]
-_data = [Vector2(0, 1), 0.0, -0.82866544, 0, 0, Vector2(1, 0), -0.88153005, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="Gradient" id="Gradient_7860b"]
-colors = PackedColorArray(0.62160003, 0.6808, 0.74, 1, 1, 1, 1, 1)
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7860b"]
-load_path = "res://.godot/imported/dust.png-ddaed6560f2b73f463b2f465ab954e35.ctex"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dn31s"]
 atlas = ExtResource("5_j0oqr")
@@ -150,6 +141,16 @@ animations = [{
 "name": &"walk",
 "speed": 15.0
 }]
+
+[sub_resource type="Curve" id="Curve_xx81n"]
+_data = [Vector2(0, 1), 0.0, -0.82866544, 0, 0, Vector2(1, 0), -0.88153005, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_7860b"]
+colors = PackedColorArray(0.62160003, 0.6808, 0.74, 1, 1, 1, 1, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7860b"]
+load_path = "res://.godot/imported/dust.png-ddaed6560f2b73f463b2f465ab954e35.ctex"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7wli1"]
 animations = [{
@@ -478,17 +479,26 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0w4p8"]
-size = Vector2(1.5, 20)
 
-[node name="Player" type="CharacterBody2D" unique_id=1160419393 node_paths=PackedStringArray("visuals", "vacuum_area", "vacuum_particles", "vacuum_dust_particles")]
+[node name="Player" type="CharacterBody2D" unique_id=1160419393 node_paths=PackedStringArray("visuals", "vacuum_area", "vacuum_particles", "vacuum_dust_particles", "capturer_component")]
+collision_mask = 2
 script = ExtResource("1_g2els")
 visuals = NodePath("Visuals")
 vacuum_area = NodePath("Vacuum/VacuumArea")
 vacuum_particles = NodePath("Vacuum/VacuumParticles")
 vacuum_dust_particles = NodePath("Vacuum/VacuumDustParticles")
+capturer_component = NodePath("CapturerComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1465140987]
 shape = SubResource("CircleShape2D_g2els")
+
+[node name="BodySprite2" type="AnimatedSprite2D" parent="." unique_id=346342849]
+visible = false
+position = Vector2(0, -2)
+sprite_frames = SubResource("SpriteFrames_j0oqr")
+animation = &"close_mouth"
+centered = false
+offset = Vector2(-16, -20)
 
 [node name="DustParticles" type="CPUParticles2D" parent="." unique_id=1495595345]
 position = Vector2(0, 6)
@@ -517,13 +527,9 @@ scale_amount_max = 0.5
 scale_amount_curve = SubResource("Curve_xx81n")
 color_initial_ramp = SubResource("Gradient_7860b")
 
-[node name="BodySprite2" type="AnimatedSprite2D" parent="." unique_id=346342849]
-visible = false
-position = Vector2(0, -2)
-sprite_frames = SubResource("SpriteFrames_j0oqr")
-animation = &"close_mouth"
-centered = false
-offset = Vector2(-16, -20)
+[node name="CapturerComponent" type="Node2D" parent="." unique_id=812343295]
+script = ExtResource("4_r4dfn")
+metadata/_custom_type_script = "uid://c4rw8aakdurjv"
 
 [node name="Visuals" type="Node2D" parent="." unique_id=246170406 node_paths=PackedStringArray("reference_sprite")]
 script = ExtResource("3_ovg4i")
@@ -536,14 +542,14 @@ sprite_name_to_texture = Dictionary[StringName, Texture2D]({
 [node name="BodySprite" type="AnimatedSprite2D" parent="Visuals" unique_id=379984882]
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_7wli1")
-animation = &"idle"
+animation = &"enter_idle"
 centered = false
 offset = Vector2(-16, -20)
 
 [node name="FaceSprite" type="AnimatedSprite2D" parent="Visuals" unique_id=96624566]
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_brjyi")
-animation = &"idle"
+animation = &"walk"
 centered = false
 offset = Vector2(-16, -20)
 
@@ -551,7 +557,7 @@ offset = Vector2(-16, -20)
 visible = false
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_o8jto")
-animation = &"idle"
+animation = &"walk"
 centered = false
 offset = Vector2(-16, -20)
 
@@ -593,10 +599,10 @@ color_initial_ramp = SubResource("Gradient_7860b")
 anim_offset_max = 1.0
 
 [node name="VacuumArea" type="Area2D" parent="Vacuum" unique_id=1231334077 node_paths=PackedStringArray("entity")]
-process_mode = 4
 position = Vector2(-1, 0)
 script = ExtResource("8_xy2vv")
 entity = NodePath("../..")
+enabled = false
 damage = 0.0
 metadata/_custom_type_script = "uid://cyn16ubhn38rx"
 
@@ -634,3 +640,5 @@ vacuum_area = NodePath("../../Vacuum/VacuumArea")
 vacuum_particles = NodePath("../../Vacuum/VacuumParticles")
 vacuum_dust_particles = NodePath("../../Vacuum/VacuumDustParticles")
 metadata/_custom_type_script = "uid://bpqjpkhit0v31"
+
+[connection signal="captured" from="CapturerComponent" to="." method="_on_capturer_component_captured"]

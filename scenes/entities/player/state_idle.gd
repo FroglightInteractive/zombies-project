@@ -16,16 +16,21 @@ func _physics_process(delta: float) -> void:
 	if input_direction:
 		state_machine.set_state("Walking")
 	
-	if Input.is_action_just_pressed("game_action") and not player.has_captured_entity():
-		state_machine.set_state("Inhaling")
+	if Input.is_action_just_pressed("game_action"):
+		if player.has_captured_entity():
+			player.exhale()
+		else:
+			state_machine.set_state("Inhaling")
 	
 	if Input.is_action_just_pressed("game_dash"):
 		state_machine.set_state("Rolling")
 	
 	player.move_and_slide()
 
-func _on_enter_state():
+func _on_enter_state(params: Dictionary = {}):
+	super(params)
 	visuals.play("enter_idle")
 
 func _on_exit_state():
+	super()
 	pass

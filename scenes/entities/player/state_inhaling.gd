@@ -10,27 +10,27 @@ extends PlayerState
 func _ready() -> void:
 	super()
 
-func _on_enter_state():
+func _on_enter_state(params: Dictionary = {}):
+	super(params)
+	vacuum_area.enable()
+	
+	# Animation
 	visuals.play("open_mouth")
 	await visuals.animation_finished
 	if is_in_state:
 		visuals.play("inhaling")
-	
-	vacuum_area.process_mode = Node.PROCESS_MODE_INHERIT
 
 func _on_exit_state():
+	super()
 	vacuum_particles.emitting = false
 	vacuum_dust_particles.emitting = false
 	
-	vacuum_area.process_mode = Node.PROCESS_MODE_DISABLED
+	vacuum_area.disable()
 
 func _physics_process(delta: float) -> void:
 	super(delta)
 	
-	var mouse_pos = get_global_mouse_position()
-	var direction = (mouse_pos - player.global_position).normalized()
-	player.set_aim_direction(direction)
-	player.walk_direction = direction
+	player.walk_direction = player.aim_direction
 	vacuum.rotation = player.aim_angle
 	
 	vacuum_particles.emitting = true

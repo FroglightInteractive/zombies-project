@@ -74,6 +74,11 @@ game_use={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Entities"
+2d_physics/layer_2="Terrain"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

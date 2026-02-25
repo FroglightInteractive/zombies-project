@@ -11,10 +11,12 @@ var time = 0.0
 func _ready() -> void:
 	super()
 
-func _on_enter_state():
+func _on_enter_state(params: Dictionary = {}):
+	super(params)
 	time = DURATION
 
 func _on_exit_state():
+	super()
 	visuals.rotation = 0.0
 	dust_particles.emitting = false
 

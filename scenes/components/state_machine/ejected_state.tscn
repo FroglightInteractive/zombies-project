@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://ck3nv4efqlkt0"]
+
+[ext_resource type="Script" uid="uid://gr7h44ctgg1j" path="res://scenes/components/state_machine/ejected_state.gd" id="1_amc07"]
+
+[node name="EjectedState" type="Node2D" unique_id=521408716]
+script = ExtResource("1_amc07")
+metadata/_custom_type_script = "uid://j76sj18t8bt2"
