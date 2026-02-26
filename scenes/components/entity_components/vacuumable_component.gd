@@ -8,7 +8,8 @@ extends EntityComponent
 @export_category("State & Hurtbox")
 @export var state_machine: StateMachine
 @export var hurtbox: Hurtbox
-@export var state_on_collision: StringName
+@export var state_on_vacuum_area_entered: StringName
+@export var state_on_vacuum_area_exited: StringName
 
 signal finished()
 signal finished_uncaptured()
@@ -23,11 +24,11 @@ var vacuum_speed: float = 0.0
 func _ready() -> void:
 	super()
 	
-	if state_machine and hurtbox:
-		use_states = true
+	use_states = (state_machine and hurtbox and state_on_vacuum_area_entered and state_on_vacuum_area_exited)
 	
 	if use_states:
-		hurtbox.recieved_damage.connect(_on_hurtbox_recieved_damage)
+		hurtbox.hitbox_entered.connect(_on_hurtbox_hitbox_entered)
+		hurtbox.hitbox_exited.connect(_on_hurtbox_hitbox_exited)
 
 func _physics_process(delta: float) -> void:
 	if not active:
@@ -66,9 +67,13 @@ func deactivate():
 func has_target() -> bool:
 	return target != null
 
-func _on_hurtbox_recieved_damage(area: Hitbox):
+func _on_hurtbox_hitbox_entered(area: Hitbox):
 	if area is VacuumArea:
-		state_machine.set_state(state_on_collision, {
+		state_machine.set_state(state_on_vacuum_area_entered, {
 			"vacuum_attract_target": area.entity,
 			"vacuum_attract_area": area as VacuumArea,
-		}) 
+		})
+
+func _on_hurtbox_hitbox_exited(area: Hitbox):
+	if area is VacuumArea:
+		state_machine.set_state(state_on_vacuum_area_exited) 

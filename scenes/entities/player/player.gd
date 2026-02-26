@@ -70,6 +70,10 @@ func _process(delta: float) -> void:
 	if abs(squash - 1.0) < 0.01:
 		squash = 1.0
 	visuals.scale = Vector2(squash, 1/squash)
+	
+	$ProgressBar.max_value = $LifeComponent.max_life
+	$ProgressBar.value = $LifeComponent.life
+	$Label.text = str($LifeComponent.life) + " / " + str($LifeComponent.max_life)
 
 func set_aim_direction(direction: Vector2):
 	aim_direction = Vector2(direction).normalized()

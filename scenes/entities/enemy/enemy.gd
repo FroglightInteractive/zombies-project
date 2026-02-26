@@ -9,3 +9,4 @@ func _on_hurtbox_recieved_damage(area: Hitbox) -> void:
 
 func _physics_process(delta: float) -> void:
 	$Label.text = $StateMachine.current_state_name
+	$Label.rotation = -rotation

@@ -53,7 +53,8 @@ color_initial_ramp = SubResource("Gradient_sbss2")
 [node name="VacuumableComponent" parent="." unique_id=2108671917 node_paths=PackedStringArray("state_machine", "hurtbox") instance=ExtResource("5_ilesx")]
 state_machine = NodePath("../StateMachine")
 hurtbox = NodePath("../Hurtbox")
-state_on_collision = &"Vacuumed"
+state_on_vacuum_area_entered = &"Vacuumed"
+state_on_vacuum_area_exited = &"Idle"
 
 [node name="CapturableComponent" parent="." unique_id=182143796 instance=ExtResource("4_frkcr")]
 
@@ -100,7 +101,6 @@ particles = NodePath("../../EjectedParticles")
 metadata/_custom_type_script = "uid://gr7h44ctgg1j"
 
 [node name="Label" type="Label" parent="." unique_id=1907289726]
-visible = false
 offset_right = 40.0
 offset_bottom = 23.0
 

@@ -1,3 +1,4 @@
+## Area that can deal damage to Hurtboxes
 extends Area2D
 class_name Hitbox
 
@@ -15,6 +16,7 @@ signal on_hurt_box_hit(hurtbox: Hurtbox)
 
 func _ready() -> void:
 	area_entered.connect(_on_area_entered)
+	area_exited.connect(_on_area_exited)
 
 func _disable() -> void:
 	monitoring = false
@@ -37,7 +39,7 @@ func _physics_process(delta: float) -> void:
 	var areas = get_overlapping_areas()
 	
 	for area in areas:
-		if area is Hurtbox and area.is_hittable(self):
+		if area is Hurtbox:
 			var hurtbox = area as Hurtbox
 			hurtbox.process_overlapping_hitbox(self)
 			sent_damage.emit(hurtbox)
@@ -47,6 +49,14 @@ func _on_area_entered(area: Area2D):
 	if not enabled:
 		return
 	
-	if area is Hurtbox and area.is_hittable(self):
+	if area is Hurtbox:
 		var hurtbox = area as Hurtbox
-		hurtbox.on_hitbox_enter(self)
+		hurtbox.on_hitbox_entered(self)
+
+func _on_area_exited(area: Area2D):
+	if not enabled:
+		return
+	
+	if area is Hurtbox:
+		var hurtbox = area as Hurtbox
+		hurtbox.on_hitbox_exited(self)

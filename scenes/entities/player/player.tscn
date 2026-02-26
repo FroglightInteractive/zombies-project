@@ -16,15 +16,16 @@
 [ext_resource type="PackedScene" uid="uid://b5pl5ca7s0ywp" path="res://scenes/components/entity_components/capturable_component.tscn" id="6_w3p2j"]
 [ext_resource type="PackedScene" uid="uid://du8bunvwp8ukg" path="res://scenes/components/entity_components/ejectable_component.tscn" id="7_knby6"]
 [ext_resource type="PackedScene" uid="uid://bk2oqqxxglu2n" path="res://scenes/components/hurtbox.tscn" id="8_fg2wu"]
+[ext_resource type="PackedScene" uid="uid://cdkvkbstvh6ef" path="res://scenes/components/life_component.tscn" id="8_go8vc"]
 [ext_resource type="Script" uid="uid://biuwy7ynlvkhq" path="res://scenes/entities/player/vacuum_area.gd" id="8_xy2vv"]
 [ext_resource type="Script" uid="uid://1r1kfnpc6d0y" path="res://scenes/entities/player/state_inhaling.gd" id="9_0w4p8"]
+[ext_resource type="Script" uid="uid://cyn16ubhn38rx" path="res://scenes/components/hitbox.gd" id="10_wghkl"]
 [ext_resource type="PackedScene" uid="uid://lcrx40kef4ok" path="res://scenes/components/state_machine/vacuumed_state.tscn" id="18_18p7g"]
 [ext_resource type="Script" uid="uid://bi1h5ia23psc" path="res://scenes/entities/player/spitting.gd" id="19_7dqom"]
 [ext_resource type="PackedScene" uid="uid://ds7sr1p10iahk" path="res://scenes/components/state_machine/captured_state.tscn" id="19_fg2wu"]
 [ext_resource type="PackedScene" uid="uid://ck3nv4efqlkt0" path="res://scenes/components/state_machine/ejected_state.tscn" id="20_7dqom"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g2els"]
-radius = 8.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dn31s"]
 atlas = ExtResource("5_j0oqr")
@@ -160,8 +161,14 @@ colors = PackedColorArray(0.62160003, 0.6808, 0.74, 1, 1, 1, 1, 1)
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7860b"]
 load_path = "res://.godot/imported/dust.png-ddaed6560f2b73f463b2f465ab954e35.ctex"
 
+[sub_resource type="LabelSettings" id="LabelSettings_go8vc"]
+font_size = 7
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_7dqom"]
-radius = 14.0
+radius = 11.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yk2xr"]
+radius = 11.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0w4p8"]
 
@@ -614,11 +621,21 @@ particles_anim_loop = false
 [node name="Player" type="CharacterBody2D" unique_id=1160419393 node_paths=PackedStringArray("visuals", "vacuum_area", "vacuum_particles", "vacuum_dust_particles", "capturer_component")]
 collision_mask = 2
 script = ExtResource("1_g2els")
+block_inputs = null
 visuals = NodePath("Visuals")
 vacuum_area = NodePath("VacuumArea")
 vacuum_particles = NodePath("Vacuum/VacuumParticles")
 vacuum_dust_particles = NodePath("Vacuum/VacuumDustParticles")
 capturer_component = NodePath("CapturerComponent")
+vacuum_range = null
+vacuum_width = null
+vacuum_visual_range_offset = null
+vacuum_visual_width = null
+vacuum_visual_particles_speed_min = null
+vacuum_visual_particles_speed_max = null
+squash_speed = null
+post_capture_squash = null
+deceleration = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1465140987]
 shape = SubResource("CircleShape2D_g2els")
@@ -678,18 +695,45 @@ metadata/_custom_type_script = "uid://c4rw8aakdurjv"
 [node name="VacuumableComponent" parent="." unique_id=397787332 node_paths=PackedStringArray("state_machine", "hurtbox") instance=ExtResource("5_pcd0u")]
 state_machine = NodePath("../StateMachine")
 hurtbox = NodePath("../Hurtbox")
-state_on_collision = &"Vacuumed"
 
 [node name="CapturableComponent" parent="." unique_id=182143796 instance=ExtResource("6_w3p2j")]
 
 [node name="EjectableComponent" parent="." unique_id=776578125 instance=ExtResource("7_knby6")]
 max_bounces = 4
 
-[node name="Hurtbox" parent="." unique_id=1723729202 instance=ExtResource("8_fg2wu")]
+[node name="LifeComponent" parent="." unique_id=1082634653 instance=ExtResource("8_go8vc")]
+max_life = 5.0
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1100893401]
+offset_left = -11.0
+offset_top = -19.0
+offset_right = 10.0
+offset_bottom = -15.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="." unique_id=2071724087]
+offset_left = -20.0
+offset_top = -29.0
+offset_right = 20.0
+offset_bottom = -17.0
+text = "3/4"
+label_settings = SubResource("LabelSettings_go8vc")
+horizontal_alignment = 1
+
+[node name="Hurtbox" parent="." unique_id=1723729202 node_paths=PackedStringArray("life_component") instance=ExtResource("8_fg2wu")]
+life_component = NodePath("../LifeComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1035310011]
 shape = SubResource("CircleShape2D_7dqom")
 debug_color = Color(0.8344506, 0.3897286, 0, 0.41960785)
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=538144440]
+script = ExtResource("10_wghkl")
+metadata/_custom_type_script = "uid://cyn16ubhn38rx"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1365434714]
+shape = SubResource("CircleShape2D_yk2xr")
+debug_color = Color(0.99864286, 0, 0.13475752, 0.41960785)
 
 [node name="VacuumArea" type="Area2D" parent="." unique_id=1231334077 node_paths=PackedStringArray("entity")]
 script = ExtResource("8_xy2vv")
@@ -721,6 +765,7 @@ offset = Vector2(-16, -20)
 [node name="FaceSprite" type="AnimatedSprite2D" parent="Visuals" unique_id=96624566]
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_dh4vq")
+animation = &"idle"
 centered = false
 offset = Vector2(-16, -20)
 
@@ -728,6 +773,7 @@ offset = Vector2(-16, -20)
 visible = false
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_f3lfh")
+animation = &"idle"
 centered = false
 offset = Vector2(-16, -20)
 

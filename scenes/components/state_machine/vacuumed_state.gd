@@ -25,6 +25,10 @@ func _on_enter_state(params: Dictionary = {}):
 	
 	vacuumable_component.activate(params["vacuum_attract_target"], params["vacuum_attract_area"])
 
+func _on_exit_state():
+	if vacuumable_component.active:
+		vacuumable_component.deactivate()
+
 func _on_vacuumable_component_finished():
 	pass
 
