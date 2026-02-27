@@ -7,8 +7,6 @@ extends Polygon2D
 @export_range(0.0, 1.0, 0.001) var angle_randomness: float = 0.0
 @export_range(0, 360, 0.01, "radians_as_degrees") var min_start_angle: float = 0.0
 @export_range(0, 360, 0.01, "radians_as_degrees") var max_start_angle: float = TAU
-#@export_range(0, 360, 0.01, "radians_as_degrees") var min_angle_step: float = 0
-#@export_range(0, 360, 0.01, "radians_as_degrees") var max_angle_step: float = TAU/32
 @export var low_radius: float = 20.0
 @export var high_radius: float = 40.0
 @export var low_radius_randomness: float = 2.0
@@ -34,11 +32,12 @@ func generate():
 	
 	var nb_peaks = peaks + rng.randi_range(-peak_randomness, peak_randomness)
 	
-	var a = rng.randf_range(min_start_angle, max_start_angle)
+	var a_offset = rng.randf_range(min_start_angle, max_start_angle)
 	var a_step = TAU / (float(nb_peaks) * 2.0)
 	var low = false
 	for i in range(nb_peaks * 2):
-		var offset_a = (a_step) * i + rng.randf_range(-0.5, 0.5) * angle_randomness
+		var a = a_offset + (a_step) * i + rng.randf_range(-0.5, 0.5) * angle_randomness
+		a = fmod(a, TAU)
 		
 		var r: float
 		if low:
@@ -48,13 +47,12 @@ func generate():
 		
 		var s = star_scale
 		if scale_profile:
-			s = s * scale_profile.sample(offset_a / TAU)
+			s = s * scale_profile.sample(a / TAU)
 		
-		var final_angle = fmod(a + offset_a, TAU)
 		var final_radius = r * s
-		var p = offset + Vector2.RIGHT.rotated(-final_angle) * final_radius
-		points.append(p)
+		var p = offset + Vector2.RIGHT.rotated(-a) * final_radius
 		
+		points.append(p)
 		low = not low
 	
 	polygon = points

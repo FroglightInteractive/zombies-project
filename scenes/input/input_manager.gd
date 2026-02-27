@@ -3,8 +3,13 @@ extends Node
 signal user_added(user_index: int)
 signal user_removed(user_index: int)
 
-# user_index is 0-3
-# device is -1 for keyboard/mouse, 0+ for joypads
+# User index represents what the players usually think of their player number.
+# Every user has an unique index. There are no repeats.
+# For example, it would range 0-3 for a 4 player game. 
+# 
+# Device index is for the device, -1 for keyboard/mouse, 0+ for joypads.
+# It doesn't have any particular order or maximum, and multiple users could
+# be assigned to the same device index (say, if a game has split keyboard)
 
 var user_data: Dictionary = {}
 var _device_to_user_index_map: Dictionary = {}
@@ -47,16 +52,19 @@ func get_user_from_device_index(device_index: int) -> int:
 
 func user_exists(user_index: int) -> bool:
 	return user_data.has(user_index)
-	
 
-# get player data.
-# null means it doesn't exist.
-func get_user_data(user_index: int, key: StringName):
-	if user_data.has(user_index) and user_data[user_index].has(key):
-		return user_data[user_index][key]
-	return null
+func supports_mouse(user_index: int) -> bool:
+	assert(user_exists(user_index), "User " + str(user_index) + " doesn't exist")
+	return get_user_data(user_index, "supports_mouse")
 
-# set player data to get later
+
+## Get data for as user.
+func get_user_data(user_index: int, key: StringName) -> Variant:
+	assert(user_data.has(user_index), "User " + str(user_index) + " doesn't exist")
+	assert(user_data[user_index].has(key), "User data " + str(user_index) + " doesn't have '" + str(key) + "' key")
+	return user_data[user_index][key]
+
+## Assigns data for an user. 
 func set_user_data(player: int, key: StringName, value: Variant):
 	# if this player is not joined, don't do anything:
 	if !user_data.has(player):
@@ -103,6 +111,7 @@ func remove_player_from_user(user_index: int):
 	user_data[user_index]["player"] = null
 
 func get_player(input_user: int) -> Player:
+	print("user_data ", user_data)
 	return user_data[input_user]["player"]
 
 ####

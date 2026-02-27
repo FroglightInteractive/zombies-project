@@ -18,9 +18,9 @@ func _physics_process(delta: float) -> void:
 	entity.rotate(20.0 * delta)
 
 func _on_enter_state(params: Dictionary = {}):
-	assert(params.has("direction") and params["direction"], "No direction param")
-	
 	super(params)
+	assert(params.has("direction") and params["direction"] != null, "No direction param")
+	
 	ejectable_component.activate(params["direction"])
 	
 	if particles:

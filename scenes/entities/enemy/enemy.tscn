@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dvube5c2o5lo3" path="res://scenes/components/entity_components/vacuumable_component.tscn" id="5_ilesx"]
 [ext_resource type="PackedScene" uid="uid://bk2oqqxxglu2n" path="res://scenes/components/hurtbox.tscn" id="6_ddkys"]
 [ext_resource type="PackedScene" uid="uid://costhn0s2oix6" path="res://scenes/components/state_machine/state_machine.tscn" id="7_ddkys"]
+[ext_resource type="PackedScene" uid="uid://dhkvjviu3e25u" path="res://scenes/components/hitbox.tscn" id="7_jkr0c"]
 [ext_resource type="Script" uid="uid://yk5j3l7455yv" path="res://scenes/entities/enemy/state_vacuumed.gd" id="9_ddkys"]
 [ext_resource type="Script" uid="uid://u603175l0nxr" path="res://scenes/entities/enemy/captured.gd" id="11_frkcr"]
 [ext_resource type="Script" uid="uid://gr7h44ctgg1j" path="res://scenes/components/state_machine/ejected_state.gd" id="12_frkcr"]
@@ -24,12 +25,16 @@ point_count = 2
 [sub_resource type="Gradient" id="Gradient_sbss2"]
 colors = PackedColorArray(0.62160003, 0.6808, 0.74, 1, 1, 1, 1, 1)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_sbss2"]
+radius = 16.0
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_h26p2"]
 radius = 16.0
 
-[node name="Enemy" type="CharacterBody2D" unique_id=722895607]
+[node name="Enemy" type="CharacterBody2D" unique_id=722895607 node_paths=PackedStringArray("hitbox")]
 collision_mask = 2
 script = ExtResource("2_x2urn")
+hitbox = NodePath("Hitbox")
 deceleration = 500.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=671228925]
@@ -58,8 +63,16 @@ state_on_vacuum_area_exited = &"Idle"
 
 [node name="CapturableComponent" parent="." unique_id=182143796 instance=ExtResource("4_frkcr")]
 
-[node name="EjectableComponent" parent="." unique_id=776578125 instance=ExtResource("5_8ei1b")]
+[node name="EjectableComponent" parent="." unique_id=776578125 node_paths=PackedStringArray("hitbox") instance=ExtResource("5_8ei1b")]
 max_bounces = 4
+hitbox = NodePath("../Hitbox")
+
+[node name="Hitbox" parent="." unique_id=683540586 instance=ExtResource("7_jkr0c")]
+enabled = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1943845504]
+shape = SubResource("CircleShape2D_sbss2")
+debug_color = Color(0.99215883, 0, 0.25709292, 0.41960785)
 
 [node name="Hurtbox" parent="." unique_id=1391892694 instance=ExtResource("6_ddkys")]
 
@@ -99,9 +112,5 @@ ejectable_component = NodePath("../../EjectableComponent")
 state_on_finished = &"Idle"
 particles = NodePath("../../EjectedParticles")
 metadata/_custom_type_script = "uid://gr7h44ctgg1j"
-
-[node name="Label" type="Label" parent="." unique_id=1907289726]
-offset_right = 40.0
-offset_bottom = 23.0
 
 [connection signal="recieved_damage" from="Hurtbox" to="." method="_on_hurtbox_recieved_damage"]

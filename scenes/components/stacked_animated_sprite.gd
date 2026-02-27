@@ -26,6 +26,15 @@ extends Node2D
 		flip_v = value
 		_run_for_all_children(func(spr: AnimatedSprite2D): spr.flip_v = value)
 
+@export var offset: Vector2 = Vector2.ZERO:
+	set(value):
+		offset = value
+		_run_for_all_nonref_children(func(spr: AnimatedSprite2D): spr.offset = reference_sprite.offset + value)
+var reference_offset: Vector2 = Vector2.ZERO
+
+@export var shake_decrease_speed = 5.0
+var shake_amount = 0.0
+
 #-----------------------------------------
 
 ## Emitted when animation changes.
@@ -59,6 +68,20 @@ func _ready() -> void:
 	reference_sprite.animation_looped.connect(func(): animation_looped.emit())
 	reference_sprite.frame_changed.connect(func(): frame_changed.emit())
 	reference_sprite.sprite_frames_changed.connect(func(): sprite_frames_changed.emit())
+	
+	reference_offset = reference_sprite.offset
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+	
+	shake_amount = max(0.0, shake_amount - delta * shake_decrease_speed)
+	var shake_offset_x = randf_range(-shake_amount, shake_amount)
+	var shake_offset_y = randf_range(-shake_amount, shake_amount)
+	_run_for_all_children(
+		func(spr: AnimatedSprite2D): 
+			spr.offset = reference_offset + offset + Vector2(shake_offset_x, shake_offset_y)
+	)
 
 #-----------------------------------------
 
@@ -67,6 +90,9 @@ func set_layer_visibility(layer_name: String, visibility: bool):
 	assert(node != null, "Layer " + str(layer_name) + " doesn't exist")
 	
 	node.visible = visibility
+
+func shake(value: float):
+	shake_amount = value
 
 #-----------------------------------------
 
@@ -88,6 +114,14 @@ func _run_for_all_children(f: Callable):
 	for child in get_children():
 		assert(child is AnimatedSprite2D)
 		f.call(child as AnimatedSprite2D)
+		
+func _run_for_all_nonref_children(f: Callable):
+	var fun = func(spr: AnimatedSprite2D):
+		if spr == reference_sprite: 
+			return
+		f.call(spr)
+	
+	_run_for_all_children(fun)
 
 
 func _sync_children():

@@ -9,6 +9,7 @@ extends Actor
 @export var vacuum_particles: CPUParticles2D
 @export var vacuum_dust_particles: CPUParticles2D
 @export var capturer_component: CapturerComponent
+@export var hitbox: Hitbox
 
 @export_category("Vacuum")
 @export var vacuum_range = 16*12
@@ -33,6 +34,8 @@ var aim_angle := 0.0
 func _ready() -> void:
 	super()
 	setup_vacuum_area()
+	
+	hitbox.disable()
 
 func setup_vacuum_area():
 	vacuum_area.disable()
@@ -62,9 +65,7 @@ func _process(delta: float) -> void:
 		visuals.set_layer_visibility("FaceSprite", true)
 		visuals.set_layer_visibility("FaceSpriteMouthFull", false)
 	
-	var mouse_pos = get_global_mouse_position()
-	var direction = (mouse_pos - global_position).normalized()
-	set_aim_direction(direction)
+	_update_aim_direction()
 	
 	squash = move_toward(squash, 1.0, squash_speed * delta)
 	if abs(squash - 1.0) < 0.01:
@@ -74,6 +75,20 @@ func _process(delta: float) -> void:
 	$ProgressBar.max_value = $LifeComponent.max_life
 	$ProgressBar.value = $LifeComponent.life
 	$Label.text = str($LifeComponent.life) + " / " + str($LifeComponent.max_life)
+
+func _update_aim_direction():
+	if block_inputs:
+		set_aim_direction(Vector2.RIGHT)
+		return
+	
+	if InputManager.supports_mouse(user_index):
+		var mouse_pos = get_global_mouse_position()
+		var direction = (mouse_pos - global_position).normalized()
+		set_aim_direction(direction)
+	else:
+		var direction = get_vector("game_left", "game_right", "game_up", "game_down")
+		if not direction.is_zero_approx():
+			set_aim_direction(direction.normalized())
 
 func set_aim_direction(direction: Vector2):
 	aim_direction = Vector2(direction).normalized()
@@ -100,14 +115,19 @@ func set_squash(value: float):
 func get_vector(negative_x: StringName, positive_x: StringName, negative_y: StringName, positive_y: StringName, deadzone: float = -1.0) -> Vector2:
 	if block_inputs:
 		return Vector2.ZERO
-	return Input.get_vector(negative_x, positive_x, negative_y, positive_y, deadzone)
+	return InputManager.get_vector(user_index, negative_x, positive_x, negative_y, positive_y, deadzone)
 
 func is_action_just_pressed(action: StringName, exact_match: bool = false) -> bool:
 	if block_inputs:
 		return false
-	return Input.is_action_just_pressed(action, exact_match)
+	return InputManager.is_action_just_pressed(user_index, action, exact_match)
 
 func is_action_just_released(action: StringName, exact_match: bool = false) -> bool:
 	if block_inputs:
 		return false
-	return Input.is_action_just_released(action, exact_match)
+	return InputManager.is_action_just_released(user_index, action, exact_match)
+
+func _on_hurtbox_recieved_damage(area: Hitbox) -> void:
+	if area.damage == 0:
+		return
+	state_machine.set_state("Damaged", {"damager": area})

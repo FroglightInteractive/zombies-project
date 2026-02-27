@@ -10,3 +10,6 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	entity.velocity = entity.velocity.move_toward(Vector2.ZERO, entity.deceleration*delta)
+
+func _process(delta: float) -> void:
+	pass
