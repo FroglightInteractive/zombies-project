@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://bjc7xwpwgvx7r"]
+
+[ext_resource type="Script" uid="uid://c30a75mfm243v" path="res://scenes/components/star_2d.gd" id="1_a2y5l"]
+
+[sub_resource type="Curve" id="Curve_a2y5l"]
+_data = [Vector2(0, 0.6), 0.0, 0.0, 0, 0, Vector2(0.51950246, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.6), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="Star2D" type="Polygon2D" unique_id=775935234]
+polygon = PackedVector2Array(-22.412289, 8.073882, -9.296646, 8.462626, -10.85501, 23.0798, -0.610425, 12.998165, 10.941957, 30.373762, 10.898676, 11.972777, 33.200382, 15.614966, 20.990347, 0.9857536, 38.766464, -13.965367, 14.078136, -12.815162, 15.801375, -33.596718, 0.84593225, -18.012983, -11.469914, -31.839336, -10.589059, -11.632644, -24.60073, -11.57034, -11.686595, -0.5488296)
+script = ExtResource("1_a2y5l")
+scale_profile = SubResource("Curve_a2y5l")
